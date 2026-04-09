@@ -774,6 +774,7 @@ function verifyClient() {
       localStorage.setItem('rot_progress_' + code, JSON.stringify(progress));
   }
 });
+  
   document.getElementById('trackGrid').style.display = 'grid';
 
   // Show/hide tracks
@@ -966,8 +967,10 @@ function showResults() {
   if (!progress[key]) progress[key] = { completed: false, highScore: 0 };
   progress[key].highScore = Math.max(progress[key].highScore, pct);
   if (passed) progress[key].completed = true;
-  if (clientCode) localStorage.setItem('rot_progress_' + clientCode, JSON.stringify(progress));
-
+  if (clientCode) {
+  localStorage.setItem('rot_progress_' + clientCode, JSON.stringify(progress));
+  saveProgressToFirebase(clientCode, progress);
+}
   // Check if CSA just got completed — unlock AI for eligible clients
   const csaJustCompleted = currentTrack === 'csa' && passed && isCsaComplete() && currentClient && currentClient.ai;
   document.getElementById('unlockBanner').className = csaJustCompleted ? 'unlock-banner show' : 'unlock-banner';
