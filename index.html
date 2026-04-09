@@ -999,6 +999,19 @@ function showToast(msg) {
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 3500);
 }
+  // ============ URL AUTO-LOGIN ============
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+  if (!ref) return;
+  try {
+    const decoded = atob(ref);
+    document.getElementById('clientCode').value = decoded;
+    verifyClient();
+  } catch (e) {
+    showToast('❌ Invalid link. Contact Bo at rotechllc.com');
+  }
+});
 </script>
 </body>
 </html>
