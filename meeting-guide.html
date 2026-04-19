@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROT — Group Meeting Guide | April 19, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00ff88;
+    --dark: #080c0f;
+    --card: #0d1318;
+    --border: #1a2530;
+    --muted: #3a4a58;
+    --white: #f0f4f8;
+    --yellow: #ffe033;
+    --red: #ff4455;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* SCANLINE EFFECT */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,255,136,0.01) 2px,
+      rgba(0,255,136,0.01) 4px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tag::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 10vw, 96px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+
+  h1 span { color: var(--green); }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    margin-top: 12px;
+  }
+
+  /* TIMER */
+  .timer-bar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 24px;
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: fadeDown 0.6s 0.1s ease both;
+  }
+
+  .timer-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .timer-display {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--green);
+    letter-spacing: 4px;
+  }
+
+  .timer-btn {
+    background: var(--green);
+    color: var(--dark);
+    border: none;
+    padding: 8px 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+
+  .timer-btn:hover { background: #00cc6a; transform: translateY(-1px); }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 48px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .section:nth-child(2) { animation-delay: 0.1s; }
+  .section:nth-child(3) { animation-delay: 0.2s; }
+  .section:nth-child(4) { animation-delay: 0.3s; }
+  .section:nth-child(5) { animation-delay: 0.4s; }
+  .section:nth-child(6) { animation-delay: 0.5s; }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .section-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    color: var(--green);
+    background: rgba(0,255,136,0.08);
+    border: 1px solid rgba(0,255,136,0.2);
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 2px;
+    white-space: nowrap;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(24px, 5vw, 36px);
+    letter-spacing: 2px;
+    color: var(--white);
+  }
+
+  .section-time {
+    margin-left: auto;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .card:hover {
+    border-color: rgba(0,255,136,0.2);
+    transform: translateX(4px);
+  }
+
+  .card-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .card p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #8a9aaa;
+  }
+
+  .card strong { color: var(--white); }
+
+  /* ICEBREAKER GRID */
+  .ice-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 600px) { .ice-grid { grid-template-columns: 1fr; } }
+
+  .ice-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    transition: all 0.2s;
+  }
+
+  .ice-card:hover {
+    border-color: rgba(0,255,136,0.25);
+    background: rgba(13,19,24,0.9);
+  }
+
+  .ice-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    line-height: 1;
+    color: rgba(0,255,136,0.15);
+    min-width: 40px;
+  }
+
+  .ice-content {}
+
+  .ice-question {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .ice-sub {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* STAT CARDS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr; } }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--green);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* BULLET LIST */
+  .bullet-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .bullet-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 15px;
+    color: #8a9aaa;
+    line-height: 1.6;
+    padding: 12px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: border-color 0.2s;
+  }
+
+  .bullet-list li:hover { border-color: rgba(0,255,136,0.2); }
+
+  .bullet-list li::before {
+    content: '→';
+    color: var(--green);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    min-width: 20px;
+    margin-top: 1px;
+  }
+
+  .bullet-list li strong { color: var(--white); }
+
+  /* SALARY TABLE */
+  .salary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .salary-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .salary-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(26,37,48,0.5);
+    color: #8a9aaa;
+  }
+
+  .salary-table tr:hover td { background: rgba(0,255,136,0.03); }
+  .salary-table .role { color: var(--white); font-weight: 600; }
+  .salary-table .money { color: var(--green); font-family: 'Space Mono', monospace; font-weight: 700; }
+  .salary-table .cleared { color: var(--yellow); font-family: 'Space Mono', monospace; font-weight: 700; }
+
+  /* SCRIPT BOX */
+  .script-box {
+    background: rgba(0,255,136,0.04);
+    border: 1px solid rgba(0,255,136,0.2);
+    border-radius: 8px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .script-box::before {
+    content: '"';
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 200px;
+    color: rgba(0,255,136,0.04);
+    position: absolute;
+    top: -30px;
+    left: 10px;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .script-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .script-label::after {
+    content: '60 SEC';
+    background: var(--green);
+    color: var(--dark);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  .script-text {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--white);
+    font-style: italic;
+    position: relative;
+    z-index: 1;
+  }
+
+  .script-text em {
+    color: var(--green);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* CTA GRID */
+  .cta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 600px) { .cta-grid { grid-template-columns: 1fr; } }
+
+  .cta-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .cta-card:hover {
+    border-color: rgba(0,255,136,0.3);
+    transform: translateY(-2px);
+  }
+
+  .cta-emoji { font-size: 28px; margin-bottom: 10px; }
+  .cta-who { font-size: 12px; color: var(--green); font-family: 'Space Mono', monospace; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+  .cta-action { font-size: 14px; color: var(--white); font-weight: 600; line-height: 1.4; }
+
+  /* SCREEN SHARE */
+  .screen-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .screen-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    transition: all 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .screen-item:hover {
+    border-color: rgba(0,255,136,0.3);
+    transform: translateX(4px);
+  }
+
+  .screen-step {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: rgba(0,255,136,0.2);
+    min-width: 32px;
+  }
+
+  .screen-info { flex: 1; }
+  .screen-title { font-size: 15px; font-weight: 600; color: var(--white); margin-bottom: 3px; }
+  .screen-url { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+  .screen-arrow { color: var(--green); font-size: 18px; }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+  }
+
+  /* HIGHLIGHT BOX */
+  .highlight {
+    background: rgba(255,224,51,0.06);
+    border: 1px solid rgba(255,224,51,0.2);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .highlight-icon { font-size: 20px; min-width: 24px; }
+  .highlight-text { font-size: 14px; color: #c8b878; line-height: 1.6; }
+  .highlight-text strong { color: var(--yellow); }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding-top: 48px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .footer span { color: var(--green); }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="tag">Rich Off Tech LLC — Group Meeting</div>
+    <h1>TODAY'S<br><span>PLAYBOOK</span></h1>
+    <div class="subtitle">// April 19, 2026 · 4:30 PM · 60 Minutes · Screen Share Ready</div>
+  </div>
+
+  <!-- TIMER -->
+  <div class="timer-bar">
+    <div>
+      <div class="timer-label">Meeting Timer</div>
+    </div>
+    <div class="timer-display" id="timer">60:00</div>
+    <button class="timer-btn" id="timerBtn" onclick="toggleTimer()">START</button>
+  </div>
+
+  <!-- SECTION 1: ICEBREAKER -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-title">Icebreaker — Pass the Ball</div>
+      <div class="section-time">10 min · 90 sec each</div>
+    </div>
+
+    <div class="highlight">
+      <div class="highlight-icon">🎯</div>
+      <div class="highlight-text"><strong>Randy goes first.</strong> Keep yours tight — 90 seconds max per person. You set the pace. If someone runs long, jump in: "I love it — drop that in the chat and let's keep moving."</div>
+    </div>
+
+    <div class="ice-grid">
+      <div class="ice-card">
+        <div class="ice-num">1</div>
+        <div class="ice-content">
+          <div class="ice-question">What's your current role?</div>
+          <div class="ice-sub">Where are you right now — job, no job, side hustle, whatever. Real talk only.</div>
+        </div>
+      </div>
+      <div class="ice-card">
+        <div class="ice-num">2</div>
+        <div class="ice-content">
+          <div class="ice-question">Where are you trying to get?</div>
+          <div class="ice-sub">Target role, salary, lifestyle. Be specific — "IT" is not an answer.</div>
+        </div>
+      </div>
+      <div class="ice-card">
+        <div class="ice-num">3</div>
+        <div class="ice-content">
+          <div class="ice-question">One thing you did this week.</div>
+          <div class="ice-sub">Toward your goal. Watched one video counts. Applied somewhere counts. Nothing is too small.</div>
+        </div>
+      </div>
+      <div class="ice-card">
+        <div class="ice-num">4</div>
+        <div class="ice-content">
+          <div class="ice-question">What's your gift?</div>
+          <div class="ice-sub">What do people naturally come to you for? That's your hidden leverage in tech.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 2: THE BIG PICTURE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-title">Why AI Is Urgent — Right Now</div>
+      <div class="section-time">8 min</div>
+    </div>
+
+    <div class="highlight">
+      <div class="highlight-icon">🇺🇸</div>
+      <div class="highlight-text"><strong>Screen share the White House AI Action Plan PDF.</strong> Show the cover. Let them see the seal. You're not selling — you're showing them what's already happening.</div>
+    </div>
+
+    <ul class="bullet-list">
+      <li>The White House dropped a 26-page plan called <strong>"Winning the Race"</strong> — this is a national security order, not a TED Talk</li>
+      <li>Trump's words directly: <strong>"It is a national security imperative to achieve and maintain unquestioned global technological dominance"</strong> — that's your job market right there</li>
+      <li>Think of it like the space race — whoever builds the biggest AI ecosystem <strong>controls the global economy AND the military.</strong> America said we're not losing</li>
+      <li>The plan mandates <strong>every federal employee gets access to AI tools</strong> — that means every agency needs people who understand this. That's the job opening</li>
+      <li>Government is treating AI like infrastructure — you don't slow-roll infrastructure. <strong>The money is moving right now</strong></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 3: FORTUNE 500 + SERVICENOW -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-title">Fortune 500 + ServiceNow = Your Lane</div>
+      <div class="section-time">10 min</div>
+    </div>
+
+    <div class="card" style="margin-bottom: 20px;">
+      <div class="card-title">Fortune 500 — Bo Definition</div>
+      <p>Fortune 500 = <strong>the 500 biggest companies in America by revenue.</strong> Think Amazon, Google, Microsoft, Lockheed Martin, Booz Allen, Deloitte — the ones that write checks with commas in them. If you got a clearance and a cert, <strong>these are the companies writing your paycheck.</strong></p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num">85%</div>
+        <div class="stat-label">of Fortune 500 run ServiceNow right now</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">$250M</div>
+        <div class="stat-label">HHS alone just signed with ServiceNow</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">70%</div>
+        <div class="stat-label">GSA discount for every fed agency through 2028</div>
+      </div>
+    </div>
+
+    <ul class="bullet-list">
+      <li><strong>425 out of 500 biggest companies</strong> run this platform — that's not a trend, that's infrastructure. You don't rip out infrastructure, you hire people to run it</li>
+      <li>GSA — the government's purchasing arm — just cut a deal giving <strong>every federal agency up to 70% off ServiceNow AI upgrades through 2028.</strong> Every agency just got the green light to buy more. Who installs and runs it? That's you</li>
+      <li>The AI Action Plan specifically calls for <strong>automating government workflows</strong> — ServiceNow is the tool. You are the person who runs the tool</li>
+      <li>Getting your CSA cert is like getting <strong>a master key to 425 buildings that are all hiring.</strong> One cert. Infinite doors</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 4: CLEARANCE + MSC -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div class="section-title">The Clearance + MSC Opportunity</div>
+      <div class="section-time">8 min · Let Kori speak</div>
+    </div>
+
+    <div class="highlight">
+      <div class="highlight-icon">🔒</div>
+      <div class="highlight-text"><strong>Tag Kori here.</strong> Let him speak for 3-5 minutes on the MSC opportunity. You set it up, he closes it.</div>
+    </div>
+
+    <ul class="bullet-list">
+      <li><strong>MSC Boat Tech:</strong> Entry pay $59K-$80K, total comp near $120K. 4 months on, 2 months off — <strong>paid during downtime.</strong> That's financial stability most jobs don't offer</li>
+      <li><strong>MSC sponsors Top Secret clearances</strong> — they pay for the investigation. That's your golden ticket handed to you for free</li>
+      <li>The AI Action Plan calls for <strong>high-security AI data centers for military and intelligence</strong> — those require cleared personnel. Clearance = permanent job security in this economy</li>
+      <li>Cybersecurity + ServiceNow + clearance = <strong>the three-headed monster nobody can touch you with.</strong> That combination barely exists in the market right now</li>
+      <li>Secret clearance adds <strong>$20-40K</strong> to your salary. Top Secret adds <strong>$30-60K.</strong> TS/SCI — you're at the top of the food chain</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 5: SALARY TABLE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div class="section-title">Real Money — 2026 Numbers</div>
+      <div class="section-time">5 min · Screen share this page</div>
+    </div>
+
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <table class="salary-table">
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>No Clearance</th>
+            <th>With Clearance 🔒</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="role">Help Desk</td>
+            <td>$35K–$45K</td>
+            <td class="cleared">$55K–$65K</td>
+          </tr>
+          <tr>
+            <td class="role">Sysadmin</td>
+            <td>$55K–$75K</td>
+            <td class="cleared">$85K–$110K</td>
+          </tr>
+          <tr>
+            <td class="role">ServiceNow Admin (CSA)</td>
+            <td class="money">$85K–$110K</td>
+            <td class="cleared">$110K–$140K</td>
+          </tr>
+          <tr>
+            <td class="role">ServiceNow Developer</td>
+            <td class="money">$110K–$150K</td>
+            <td class="cleared">$130K–$180K</td>
+          </tr>
+          <tr>
+            <td class="role">Cybersecurity Analyst</td>
+            <td>$70K–$95K</td>
+            <td class="cleared">$100K–$140K</td>
+          </tr>
+          <tr>
+            <td class="role">Business Analyst (remote)</td>
+            <td class="money">$80K–$120K</td>
+            <td class="cleared">$100K–$180K</td>
+          </tr>
+          <tr>
+            <td class="role">AI/ML Engineer</td>
+            <td class="money">$120K–$160K</td>
+            <td class="cleared">$150K–$200K+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="highlight" style="margin-top: 16px;">
+      <div class="highlight-icon">💡</div>
+      <div class="highlight-text">The clearance is the multiplier. Same role, same skills — the clearance is the only difference between $35K and $65K. That's the bag right there.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 6: 60 SEC SCRIPT -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <div class="section-title">Your Opening Script</div>
+      <div class="section-time">60 seconds · Memorize this</div>
+    </div>
+
+    <div class="script-box">
+      <div class="script-label">Bo Language — Speak This Word for Word</div>
+      <div class="script-text">
+        "Real quick — I'm gonna show y'all something. This right here is the actual <em>White House AI Action Plan.</em> Dropped July 2025. The President of the United States said — I'm reading directly — AI is a <em>national security imperative.</em> Not a trend. A race we have to win.<br><br>
+
+        Now let me break that down in real talk. The <em>Fortune 500</em> — that's the 500 biggest companies in America, the ones writing million dollar checks — <em>85% of them already run ServiceNow.</em> The government just gave every federal agency a deal to buy MORE of it through 2028. They're building AI data centers that need cleared people to run them. They're mandating AI training for every federal worker.<br><br>
+
+        The jobs are already there. The contracts are already signed. The clearances are being sponsored — <em>Kori can speak to that directly.</em><br><br>
+
+        The only question in this room today is: <em>is your name attached to any of this?</em> Because if it's not — that's what we're fixing right now."
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 7: SCREEN SHARE ORDER -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <div class="section-title">Screen Share Order</div>
+      <div class="section-time">Click to open each</div>
+    </div>
+
+    <div class="screen-list">
+      <a class="screen-item" href="#" onclick="alert('Open your White House AI PDF')">
+        <div class="screen-step">1</div>
+        <div class="screen-info">
+          <div class="screen-title">White House AI Action Plan PDF</div>
+          <div class="screen-url">Show cover → flip to page 10 (Gov AI Adoption) → let them see the seal</div>
+        </div>
+        <div class="screen-arrow">→</div>
+      </a>
+      <a class="screen-item" href="https://www.servicenow.com/jobs" target="_blank">
+        <div class="screen-step">2</div>
+        <div class="screen-info">
+          <div class="screen-title">ServiceNow Jobs Page</div>
+          <div class="screen-url">servicenow.com/jobs — filter by government, show live listings</div>
+        </div>
+        <div class="screen-arrow">→</div>
+      </a>
+      <a class="screen-item" href="https://clearancejobs.com" target="_blank">
+        <div class="screen-step">3</div>
+        <div class="screen-info">
+          <div class="screen-title">ClearanceJobs.com</div>
+          <div class="screen-url">Search ServiceNow — show how many open right now</div>
+        </div>
+        <div class="screen-arrow">→</div>
+      </a>
+      <a class="screen-item" href="https://www.usajobs.gov/search/results/?k=servicenow" target="_blank">
+        <div class="screen-step">4</div>
+        <div class="screen-info">
+          <div class="screen-title">USAJobs.gov — ServiceNow Search</div>
+          <div class="screen-url">Show federal postings — real agencies, real salaries</div>
+        </div>
+        <div class="screen-arrow">→</div>
+      </a>
+      <a class="screen-item" href="https://discord.gg/7bjyPvTx4w" target="_blank">
+        <div class="screen-step">5</div>
+        <div class="screen-info">
+          <div class="screen-title">ROT Discord</div>
+          <div class="screen-url">Show the bot, job board, quiz engine, community — this is the infrastructure</div>
+        </div>
+        <div class="screen-arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 8: CLOSE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">08</div>
+      <div class="section-title">Close — One Action Per Person</div>
+      <div class="section-time">10 min</div>
+    </div>
+
+    <div class="cta-grid">
+      <div class="cta-card">
+        <div class="cta-emoji">📚</div>
+        <div class="cta-who">Not certified yet</div>
+        <div class="cta-action">Pick your exam date today. Not someday — today. Book it.</div>
+      </div>
+      <div class="cta-card">
+        <div class="cta-emoji">🔒</div>
+        <div class="cta-who">In tech, no clearance</div>
+        <div class="cta-action">Talk to Kori after this call. MSC opportunity is live right now.</div>
+      </div>
+      <div class="cta-card">
+        <div class="cta-emoji">📄</div>
+        <div class="cta-who">Has clearance, not moving</div>
+        <div class="cta-action">Resume to Randy this week. Get on the job board by Friday.</div>
+      </div>
+    </div>
+
+    <div class="script-box" style="margin-top: 24px;">
+      <div class="script-label">Closing Line</div>
+      <div class="script-text">"The jobs are there. The contracts are signed. The clearances are being sponsored. The only question is whether your name is on the list when they start filling seats. Let's make sure it is."</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>Rich Off Tech LLC</span> — richofftechllc.com — discord.gg/7bjyPvTx4w
+  </div>
+
+</div>
+
+<script>
+  let seconds = 3600;
+  let running = false;
+  let interval = null;
+
+  function toggleTimer() {
+    const btn = document.getElementById('timerBtn');
+    if (!running) {
+      running = true;
+      btn.textContent = 'PAUSE';
+      btn.style.background = '#ff4455';
+      interval = setInterval(() => {
+        if (seconds > 0) {
+          seconds--;
+          updateDisplay();
+        } else {
+          clearInterval(interval);
+          btn.textContent = 'DONE';
+          document.getElementById('timer').style.color = '#ff4455';
+        }
+      }, 1000);
+    } else {
+      running = false;
+      clearInterval(interval);
+      btn.textContent = 'RESUME';
+      btn.style.background = '#00ff88';
+    }
+  }
+
+  function updateDisplay() {
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    document.getElementById('timer').textContent = `${m}:${s}`;
+    if (seconds <= 600) {
+      document.getElementById('timer').style.color = '#ffe033';
+    }
+    if (seconds <= 300) {
+      document.getElementById('timer').style.color = '#ff4455';
+    }
+  }
+</script>
+
+</body>
+</html>
