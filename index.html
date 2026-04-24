@@ -395,6 +395,16 @@ const CLIENTS = {
   'KAMERYN2026':   { name: 'Kameryn',            secPlus: false, csa: false, ai: true,  secVerified: false },
   'TOURE2026':     { name: 'Toure',              secPlus: false, csa: false, ai: true,  secVerified: false },
   'EURRO2026':     { name: 'Eurro',              secPlus: true,  csa: true,  ai: true,  secVerified: false },
+
+  // ── AWS AI BONUS TIER (Founding perk) ──
+  'CJ2026':        { name: 'CJ',                 secPlus: false, csa: false, ai: true,  secVerified: false },
+  'MIKEY2026':     { name: 'Mikey',              secPlus: false, csa: false, ai: true,  secVerified: false },
+  'TYSHAUN2026':   { name: 'Tyshaun',            secPlus: false, csa: false, ai: true,  secVerified: false },
+  'ROLAND2026':    { name: 'Roland',             secPlus: false, csa: false, ai: true,  secVerified: false },
+  'TRAVON2026':    { name: 'Travon',             secPlus: false, csa: false, ai: true,  secVerified: false },
+  'SAL2026':       { name: 'Sal',                secPlus: false, csa: false, ai: true,  secVerified: false },
+  'DARIUS2026':    { name: 'Darius',             secPlus: false, csa: false, ai: true,  secVerified: false },
+  'QUAMON2026':    { name: 'Quamon',             secPlus: false, csa: false, ai: true,  secVerified: false },
 };
 
 // ============ QUIZ DATA ============
@@ -826,16 +836,10 @@ function verifyClient() {
   document.getElementById('cardSecplus').style.display = client.secPlus ? '' : 'none';
   document.getElementById('cardCSA').style.display = client.csa ? '' : 'none';
 
-  // AI track: show only if client has ai access AND CSA is complete
+  // AI track: show if client has ai access (no CSA gate)
   if (client.ai) {
     document.getElementById('cardAI').style.display = '';
-    const csaComplete = isCsaComplete();
-    if (!csaComplete) {
-      document.getElementById('cardAI').classList.add('locked-track');
-      document.getElementById('cardAI').querySelector('.track-desc').textContent = '🔒 Complete all 8 CSA modules to unlock this track.';
-    } else {
-      document.getElementById('cardAI').classList.remove('locked-track');
-    }
+    document.getElementById('cardAI').classList.remove('locked-track');
   }
 
   showToast(`✅ Welcome back, ${client.name}. Let's get to work.`);
@@ -866,7 +870,6 @@ function selectTrack(track) {
   if (!currentClient) { showToast('🔐 Enter your access code first.'); return; }
   if (track === 'ai') {
     if (!currentClient.ai) { showToast('❌ Not in your plan. Contact Bo.'); return; }
-    if (!isCsaComplete()) { showToast('🔒 Finish all 8 CSA modules first. Then this unlocks.'); return; }
   }
   currentTrack = track;
   showDomains();
