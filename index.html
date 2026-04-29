@@ -3,7 +3,7 @@
 <head>
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-  import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+  import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
   const firebaseConfig = {
     apiKey: "AIzaSyDJwlb0MuVNA45iE-hccdp7HY-F4mdc_yE",
@@ -16,7 +16,7 @@
   const db = getFirestore(app);
 
   window._firebaseDb = db;
-  window._firestoreFns = { doc, setDoc, getDoc };
+  window._firestoreFns = { doc, setDoc, getDoc, collection, query, where, getDocs };
 </script>
 <meta charset="UTF-8">
 
@@ -813,10 +813,51 @@ let progress = {};
 let clientCode = null;
 
 // ============ CLIENT VERIFY ============
-function verifyClient() {
+const PRODUCT_TYPE_FLAGS = {
+  founding: { secPlus: false, csa: false, ai: true,  secVerified: false },
+  secplus:  { secPlus: true,  csa: false, ai: true,  secVerified: false },
+  csa:      { secPlus: false, csa: true,  ai: true,  secVerified: false },
+  aws:      { secPlus: false, csa: false, ai: true,  secVerified: false },
+  secret:   { secPlus: true,  csa: true,  ai: true,  secVerified: false },
+  ts:       { secPlus: true,  csa: true,  ai: true,  secVerified: false },
+  tsci:     { secPlus: true,  csa: true,  ai: true,  secVerified: false },
+};
+
+function nameFromEmail(email) {
+  const local = (email || '').split('@')[0];
+  if (!local) return 'New Member';
+  const titled = local.split(/[._-]+/).filter(Boolean)
+    .map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase())
+    .join(' ');
+  return titled || 'New Member';
+}
+
+async function lookupCustomerByQuizCode(code) {
+  try {
+    if (!window._firebaseDb || !window._firestoreFns) return null;
+    const { collection, query, where, getDocs } = window._firestoreFns;
+    if (!collection || !query || !where || !getDocs) return null;
+    const q = query(collection(window._firebaseDb, 'customers'), where('quizCode', '==', code));
+    const snap = await getDocs(q);
+    if (snap.empty) return null;
+    const data = snap.docs[0].data() || {};
+    const flags = PRODUCT_TYPE_FLAGS[data.productType];
+    if (!flags) return null;
+    return { name: nameFromEmail(data.email), ...flags };
+  } catch (err) {
+    console.log('Firestore customers lookup error:', err.message);
+    return null;
+  }
+}
+
+async function verifyClient() {
   const code = document.getElementById('clientCode').value.trim().toUpperCase();
-  const client = CLIENTS[code];
-  if (!client) { showToast('❌ Invalid access code. Contact Bo at rotechllc.com'); return; }
+  let client = CLIENTS[code];
+  if (!client) {
+    showToast('🔄 Verifying…');
+    client = await lookupCustomerByQuizCode(code);
+    if (!client) { showToast('❌ Invalid access code. Contact Bo at rotechllc.com'); return; }
+  }
   currentClient = client;
   clientCode = code;
   document.getElementById('clientDisplay').textContent = client.name.toUpperCase();
