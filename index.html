@@ -216,7 +216,7 @@
   .progress-fill.gold { background: var(--gold); }
   .progress-fill.blue { background: var(--blue); }
   .question-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-dim); margin-bottom: 10px; letter-spacing: 1px; }
-  .question-text { font-size: clamp(17px, 2.5vw, 21px); font-weight: 500; line-height: 1.5; margin-bottom: 28px; color: white; }
+  .question-text { font-size: clamp(17px, 2.5vw, 21px); font-weight: 500; line-height: 1.5; margin-bottom: 28px; color: var(--text); }
   .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
   .option {
     background: var(--gray); border: 1px solid var(--gray3); border-radius: 10px;
@@ -307,6 +307,11 @@
         <button class="btn btn-green" onclick="verifyClient()">UNLOCK</button>
       </div>
       <p style="font-size:12px;color:var(--text-dim);margin-top:12px;">Your access code was provided by Bo after your consultation. Don't have one? Book at rotechllc.com</p>
+    </div>
+    <div class="login-section" style="border-color:var(--gold);">
+      <div class="login-title" style="color:var(--gold);">🏆 ROTECH COMMUNITY ROSTER</div>
+      <p style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:16px;">Cleared tech professionals leveling up together. Add yourself. See who's in the room.</p>
+      <a href="https://rotechllc.com/roster/" target="_blank" rel="noopener" class="btn btn-gold" style="display:inline-block;text-decoration:none;">VIEW ROSTER →</a>
     </div>
     <div class="track-grid" id="trackGrid" style="display:none">
       <div class="track-card" id="cardSecplus" onclick="selectTrack('secplus')">
@@ -503,6 +508,10 @@ const CLIENTS = {
   'SAL2026':       { name: 'Sal',                secPlus: false, csa: false, ai: true,  secVerified: false },
   'DARIUS2026':    { name: 'Darius',             secPlus: false, csa: false, ai: true,  secVerified: false },
   'QUAMON2026':    { name: 'Quamon',             secPlus: false, csa: false, ai: true,  secVerified: false },
+
+  // ── BACKFILL — paid Square buyers (webhook gap) ──
+  'MALIK2026':     { name: 'Malik',              secPlus: true,  csa: false, ai: true,  secVerified: false },
+  'TYLER2026':     { name: 'Tyler',              secPlus: true,  csa: true,  ai: true,  secVerified: true  },
 };
 
 // ============ QUIZ DATA ============
