@@ -16,7 +16,6 @@ Last updated: 2026-04-08
 | Lavonda Moore | LAVONDA2026 | Sec+ only | Active |
 | Jasmine | JASMINE2026 | CSA only | Active |
 | Michael | MICHAEL2026 | Sec+ | Active |
-| Cue Tillman | CUEB2026 | AWS (complete) + CSA | Active - CSA paid (Square inv #000216) |
 | ROT Admin | ROTADMIN2026 | All tracks | Internal |
 | ROT Staff (Pipeline) | ROTPIPELINE | Elevated access | Internal |
 | Demo / Preview | ROT2026 | All tracks (demo) | Internal |
